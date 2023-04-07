@@ -15,12 +15,12 @@ editor: visual
 source("drive_times_setup.R")
 
 ## Load the API key
+readRenviron('.Renviron')
 api_key <- Sys.getenv("MAPS_API_KEY")
-
 ## Set origin and destination
 ## Change these to your own selections!
 ORIG <- "2221 University Ave SE, Minneapolis, MN"
-DEST <- "4940 France Ave S, Minneapolis, MN"
+DEST <- "60 E Broadway, Bloomington, MN"
 ```
 
 ## Route Information
@@ -35,7 +35,6 @@ DEST <- "4940 France Ave S, Minneapolis, MN"
 
 ```{r}
 #| echo: false
-
 ## Produce the map
 google_map(key = api_key) %>%
   add_polylines(get_route_polyline(ORIG, DEST), polyline = "points")
@@ -56,7 +55,7 @@ drive_times <- map_dfr(times_to_check, get_travel_times,
 
 ## Produce the drive times plot
 drive_times %>% 
-  pivot_longer(-departure_time, names_to = "estimate_type", values_to = "estimate") %>%
+  tidyr::pivot_longer(-departure_time, names_to = "estimate_type", values_to = "estimate") %>%
   group_by(estimate_type) %>%
   mutate(is_type_min = (estimate == min(estimate))) %>%
   ungroup() %>%
